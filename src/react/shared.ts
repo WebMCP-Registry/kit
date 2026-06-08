@@ -23,7 +23,7 @@ export function registerWithWarning(tools: ToolDefinition[]): void {
 
   const names = tools.map((tool) => `"${tool.name}"`).join(', ')
   console.warn(
-    `[webmcp-kit] modelContext is unavailable on document or navigator — tool(s) ${names} ` +
+    `[webmcp] modelContext is unavailable on document or navigator — tool(s) ${names} ` +
       `were not registered. ` +
       `WebMCP may not be enabled in this browser. Enable it at chrome://flags/#enable-webmcp-testing ` +
       `(Chrome's WebMCP origin trial). See https://developer.chrome.com/docs/ai/webmcp`,

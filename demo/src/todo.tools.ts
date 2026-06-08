@@ -1,6 +1,6 @@
 /**
  * `*.tools.ts`: a file the CLI can statically discover and import in an
- * isolated Node context (no React/browser deps — only `webmcp-kit`, `zod`,
+ * isolated Node context (no React/browser deps — only `@webmcp-registry/kit`, `zod`,
  * and the plain module-level `todo-store`). Every tool here is a complete,
  * runnable `defineTool` — its handler talks to the store, not component
  * state, so there's nothing about it that requires a component to exist.
@@ -8,7 +8,7 @@
  * Compare with `draft.tools.ts`, where the handler *must* live inside a
  * component because it closes over a `useState` setter.
  */
-import { defineTool } from 'webmcp-kit'
+import { defineTool } from '@webmcp-registry/kit'
 import { z } from 'zod'
 import { addTodo, completeTodo, getTodos } from './todo-store.js'
 

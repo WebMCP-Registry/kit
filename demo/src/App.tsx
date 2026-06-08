@@ -1,5 +1,5 @@
 import { useState, useSyncExternalStore } from 'react'
-import { useWebMCPTool, useWebMCPTools } from 'webmcp-kit/react'
+import { useWebMCPTool, useWebMCPTools } from '@webmcp-registry/kit/react'
 import { setDraftContract } from './draft.tools.js'
 import { addTodo, getTodos, subscribe, toggleTodo } from './todo-store.js'
 import { todoTools } from './todo.tools.js'
@@ -37,7 +37,7 @@ export function App() {
 
   return (
     <main style={{ maxWidth: 480, margin: '3rem auto', fontFamily: 'system-ui, sans-serif' }}>
-      <h1>webmcp-kit demo</h1>
+      <h1>@webmcp-registry/kit demo</h1>
       <p style={{ color: hasModelContext ? 'green' : 'crimson' }}>
         {hasModelContext
           ? '✓ modelContext is available — tools are registered (open devtools console for confirmation).'

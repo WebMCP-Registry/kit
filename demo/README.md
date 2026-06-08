@@ -1,4 +1,4 @@
-# webmcp-kit demo
+# @webmcp-registry/kit demo
 
 A minimal todo app exercising `defineTool` + `useWebMCPTools` against the real
 WebMCP platform API (`document.modelContext`), not a polyfill or mock.
@@ -6,7 +6,7 @@ WebMCP platform API (`document.modelContext`), not a polyfill or mock.
 ## Run it
 
 ```bash
-npm install   # links the local `webmcp-kit` package via `file:..`
+npm install   # links the local `@webmcp-registry/kit` package via `file:..`
 npm run dev   # http://localhost:5173
 ```
 
@@ -23,7 +23,7 @@ is targeted for Chrome 149 via origin trial). To exercise it locally:
 2. Load `http://localhost:5173`. The banner at the top of the page flips from
    "✗ unavailable" to "✓ available" once `document.modelContext` exists.
 3. Open DevTools → Console:
-   - With the flag **off**, you'll see `webmcp-kit`'s dev-mode warning naming
+   - With the flag **off**, you'll see `@webmcp-registry/kit`'s dev-mode warning naming
      each tool that wasn't registered, with a link back to the flag.
    - With the flag **on**, no warning — the tools registered silently, as
      they should in production.

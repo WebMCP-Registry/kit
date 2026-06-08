@@ -1,4 +1,4 @@
-# Contributing to webmcp-kit
+# Contributing to @webmcp-registry/kit
 
 Thanks for taking a look — patches, bug reports, and questions are all welcome. This doc covers how the project is laid out and how to get a change from your machine into a release.
 

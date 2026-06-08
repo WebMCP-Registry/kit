@@ -9,7 +9,7 @@
  * Paired with `useWebMCPTool(setDraftContract, handler)` in `App.tsx`, where
  * `setDraft` is in scope.
  */
-import { defineToolContract } from 'webmcp-kit'
+import { defineToolContract } from '@webmcp-registry/kit'
 import { z } from 'zod'
 
 export const setDraftContract = defineToolContract({

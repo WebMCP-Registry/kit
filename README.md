@@ -1,4 +1,4 @@
-# webmcp-kit
+# @webmcp-registry/kit
 
 A small toolkit for exposing parts of your web app as tools an AI agent can call — built on top of [WebMCP](https://webmachinelearning.github.io/webmcp/), the emerging browser API that lets a page register tools directly on `document`/`navigator`.
 
@@ -10,7 +10,7 @@ It gives you:
 
 If you've never heard of WebMCP: think of it as the in-browser sibling of MCP. Instead of running a separate server that an agent connects to, your *web page itself* declares "here's what you can ask me to do," and a browser-native agent can call those tools directly — with the user's session, permissions, and current page state already in scope.
 
-> **Heads up:** WebMCP is brand new and not broadly shipped yet. As of writing, it's behind a flag in Chrome (`chrome://flags/#enable-webmcp-testing`, part of an origin trial). `webmcp-kit` is built so your code is ready the moment support lands — and degrades to a harmless no-op (with a console warning in dev) where it hasn't yet.
+> **Heads up:** WebMCP is brand new and not broadly shipped yet. As of writing, it's behind a flag in Chrome (`chrome://flags/#enable-webmcp-testing`, part of an origin trial). `@webmcp-registry/kit` is built so your code is ready the moment support lands — and degrades to a harmless no-op (with a console warning in dev) where it hasn't yet.
 
 ## Install
 

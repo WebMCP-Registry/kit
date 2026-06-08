@@ -21,7 +21,7 @@ const UNSUPPORTED_TYPE_NAMES = new Set([
 export class UnsupportedSchemaError extends Error {
   constructor(path: string, typeName: string) {
     super(
-      `[webmcp-kit] Unsupported Zod construct "${typeName}" at "${path || '<root>'}". ` +
+      `[webmcp] Unsupported Zod construct "${typeName}" at "${path || '<root>'}". ` +
         `defineTool's input schema must convert cleanly to JSON Schema for agents to use. ` +
         `Avoid .transform()/.refine()/.superRefine(), z.discriminatedUnion(), z.lazy(), and ` +
         `.pipe() in tool input schemas — restructure with plain z.object()/z.union()/z.enum() ` +
