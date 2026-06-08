@@ -6,7 +6,7 @@ import { runSync } from './sync.js'
 const DEFAULT_REGISTRY_URL = 'https://webmcp-registry.dev'
 
 function printUsage(): void {
-  console.log(`Usage: webmcp-kit <command> [options]
+  console.log(`Usage: webmcp <command> [options]
 
 Commands:
   sync     Scan *.tools.ts files and sync their schemas to the WebMCP Registry
@@ -14,12 +14,14 @@ Commands:
 Options for "sync":
   --domain <domain>        Domain to sync tools under (required)
   --api-key <key>          Registry API key — or set WEBMCP_REGISTRY_KEY (required)
+  --category <name>        Domain category — only used when registering a new domain
+                           (e.g. "Developer Tools"; see the registry for valid values)
   --cwd <dir>              Directory to scan (default: current directory)
   --registry-url <url>     Registry base URL (default: ${DEFAULT_REGISTRY_URL})
   --dry-run                Report what would change without pushing
 
 Example:
-  webmcp-kit sync --domain myapp.com --api-key $WEBMCP_REGISTRY_KEY`)
+  webmcp sync --domain myapp.com --api-key $WEBMCP_REGISTRY_KEY`)
 }
 
 async function main(): Promise<void> {
@@ -43,6 +45,7 @@ async function main(): Promise<void> {
     options: {
       domain: { type: 'string' },
       'api-key': { type: 'string' },
+      category: { type: 'string' },
       cwd: { type: 'string' },
       'registry-url': { type: 'string' },
       'dry-run': { type: 'boolean', default: false },
@@ -71,6 +74,7 @@ async function main(): Promise<void> {
       cwd: path.resolve(values.cwd ?? process.cwd()),
       domain,
       apiKey,
+      category: values.category,
       registryUrl: values['registry-url'] ?? DEFAULT_REGISTRY_URL,
       dryRun: values['dry-run'] ?? false,
     })

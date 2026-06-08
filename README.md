@@ -6,7 +6,7 @@ It gives you:
 
 - **`defineTool`** — describe a tool with a Zod schema and a handler, get something the browser can run, with the JSON Schema generated for you.
 - **`useWebMCPTool` / `useWebMCPTools`** — React hooks that register tools for the lifetime of a component and clean up after themselves.
-- **`webmcp-kit sync`** — a CLI that scans your project for tools and pushes their schemas to the [WebMCP Registry](https://webmcp-registry.dev), so agents can discover what your site can do before they even land on it.
+- **`webmcp sync`** — a CLI that scans your project for tools and pushes their schemas to the [WebMCP Registry](https://webmcp-registry.dev), so agents can discover what your site can do before they even land on it.
 
 If you've never heard of WebMCP: think of it as the in-browser sibling of MCP. Instead of running a separate server that an agent connects to, your *web page itself* declares "here's what you can ask me to do," and a browser-native agent can call those tools directly — with the user's session, permissions, and current page state already in scope.
 
@@ -15,17 +15,19 @@ If you've never heard of WebMCP: think of it as the in-browser sibling of MCP. I
 ## Install
 
 ```bash
-npm install webmcp-kit zod
+npm install @webmcp-registry/kit zod
 ```
 
-`zod` is a peer dependency — you bring your own version (`^3`). `react` is an optional peer dependency, only needed if you use the `webmcp-kit/react` hooks.
+`zod` is a peer dependency — you bring your own version (`^3`). `react` is an optional peer dependency, only needed if you use the `@webmcp-registry/kit/react` hooks.
+
+> **Note on names:** the npm package is `@webmcp-registry/kit`, and it ships a CLI command called `webmcp` (you'll see it as `npx webmcp sync` below). Install the package and the command comes with it — `npx` resolves it from your local `node_modules/.bin`. If you ever try to run `webmcp` *without* installing first, be explicit (`npx --package=@webmcp-registry/kit -- webmcp sync ...`): there's an unrelated package also named `webmcp` on npm, and a bare `npx webmcp` could resolve to it instead of ours.
 
 ## Quick start
 
 Describe a tool with a name, a description (this is what the agent reads to decide whether to call it — write it like you're explaining the action to a person), an input schema, and a handler:
 
 ```ts
-import { defineTool } from 'webmcp-kit'
+import { defineTool } from '@webmcp-registry/kit'
 import { z } from 'zod'
 
 export const addTodoTool = defineTool({
@@ -47,7 +49,7 @@ That's a complete `ToolDefinition` — name, description, JSON Schema (derived f
 Now register it from a component:
 
 ```tsx
-import { useWebMCPTool } from 'webmcp-kit/react'
+import { useWebMCPTool } from '@webmcp-registry/kit/react'
 import { addTodoTool } from './todo.tools'
 
 function TodoApp() {
@@ -66,7 +68,7 @@ For that case, split the schema from the handler:
 
 ```ts
 // draft.tools.ts — just the contract, no handler. Lives at module scope.
-import { defineToolContract } from 'webmcp-kit'
+import { defineToolContract } from '@webmcp-registry/kit'
 import { z } from 'zod'
 
 export const setDraftContract = defineToolContract({
@@ -79,7 +81,7 @@ export const setDraftContract = defineToolContract({
 
 ```tsx
 // inside your component, where setDraft actually exists
-import { useWebMCPTool } from 'webmcp-kit/react'
+import { useWebMCPTool } from '@webmcp-registry/kit/react'
 import { setDraftContract } from './draft.tools'
 
 function TodoApp() {
@@ -103,7 +105,7 @@ function TodoApp() {
 `useWebMCPTools` (plural) batches an array of tools under a single `AbortController`, which is what you want once a component exposes more than one thing:
 
 ```tsx
-import { useWebMCPTools } from 'webmcp-kit/react'
+import { useWebMCPTools } from '@webmcp-registry/kit/react'
 import { todoTools } from './todo.tools'
 
 function TodoApp() {
@@ -125,22 +127,26 @@ src/
   draft.tools.ts     // export const setDraftContract = defineToolContract({ ... })
 ```
 
-This isn't enforced by the SDK at runtime — it's a convention that makes your tools discoverable by `webmcp-kit sync`, which scans for these files and imports them in an isolated Node context to read their schemas. Following it costs you nothing (these files would probably look like this anyway) and means the CLI just works without any extra config.
+This isn't enforced by the SDK at runtime — it's a convention that makes your tools discoverable by `webmcp sync`, which scans for these files and imports them in an isolated Node context to read their schemas. Following it costs you nothing (these files would probably look like this anyway) and means the CLI just works without any extra config.
 
 ## Syncing to the registry
 
-The [WebMCP Registry](https://webmcp-registry.dev) is a public directory of what tools live on which domains — the place an agent can look *before* visiting your site to find out what it can do there. `webmcp-kit sync` keeps that directory honest by pushing your actual tool schemas straight from source.
+The [WebMCP Registry](https://webmcp-registry.dev) is a public directory of what tools live on which domains — the place an agent can look *before* visiting your site to find out what it can do there. `webmcp sync` keeps that directory honest by pushing your actual tool schemas straight from source.
+
+Since you've already got `@webmcp-registry/kit` installed (per the install step above), `npx` will find its `webmcp` binary in your local `node_modules/.bin` — no extra setup:
 
 ```bash
-npx webmcp-kit sync --domain example.com --api-key $WEBMCP_REGISTRY_KEY
+npx webmcp sync --domain example.com --api-key $WEBMCP_REGISTRY_KEY
 ```
+
+> See the note on names above if you want to run this *without* installing first — a bare `npx webmcp` with nothing installed locally can resolve to an unrelated package.
 
 Get an API key from the registry's dashboard once you've signed in and verified your domain. Treat it like any other secret — store it in your CI provider's secrets, never commit it, never ship it to the browser.
 
 Want to see what would happen first?
 
 ```bash
-npx webmcp-kit sync --domain example.com --api-key $WEBMCP_REGISTRY_KEY --dry-run
+npx webmcp sync --domain example.com --api-key $WEBMCP_REGISTRY_KEY --dry-run
 ```
 
 ```
@@ -166,7 +172,7 @@ A few things worth knowing about what happens on push:
 ### CLI options
 
 ```
-webmcp-kit sync --domain <domain> --api-key <key> [options]
+webmcp sync --domain <domain> --api-key <key> [options]
 
   --domain <domain>        Domain to sync tools under (required)
   --api-key <key>          Registry API key — or set WEBMCP_REGISTRY_KEY (required)
@@ -177,11 +183,11 @@ webmcp-kit sync --domain <domain> --api-key <key> [options]
 
 ### Wiring it into CI
 
-The natural home for `sync` is your deploy pipeline — run it after a successful build so the registry never drifts out of sync with what's actually live:
+The natural home for `sync` is your deploy pipeline — run it after a successful build (and after `npm ci`/`npm install`, so `@webmcp-registry/kit` is in `node_modules` and `npx` resolves the local `webmcp` binary) so the registry never drifts out of sync with what's actually live:
 
 ```yaml
 - name: Sync WebMCP tools to registry
-  run: npx webmcp-kit sync --domain example.com --api-key ${{ secrets.WEBMCP_REGISTRY_KEY }}
+  run: npx webmcp sync --domain example.com --api-key ${{ secrets.WEBMCP_REGISTRY_KEY }}
 ```
 
 Because unchanged tools are free, this is safe to run on every single deploy — most runs will do nothing at all.

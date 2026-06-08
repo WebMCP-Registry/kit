@@ -10,6 +10,12 @@ export interface SyncOptions {
   apiKey: string
   registryUrl: string
   dryRun: boolean
+  /**
+   * Domain category, applied when the domain is registered or updated —
+   * see `submitTools`'s doc comment. Only meaningful to the registry; the
+   * CLI passes it through as-is and lets the server validate it.
+   */
+  category?: string
 }
 
 export interface SyncReport {
@@ -22,7 +28,7 @@ export interface SyncReport {
 }
 
 /**
- * The full `webmcp-kit sync` pipeline:
+ * The full `webmcp sync` pipeline:
  *
  *   scan (real `defineTool`/`zodToJsonSchema` code path, see `scan.ts`)
  *     → hash + diff against the registry's current active tools (local-only
@@ -101,7 +107,7 @@ export async function runSync(options: SyncOptions, log: (line: string) => void 
   }))
 
   log(`\nPushing ${payload.length} tool(s) to ${options.registryUrl}…`)
-  const result = await submitTools(options.registryUrl, options.apiKey, options.domain, payload)
+  const result = await submitTools(options.registryUrl, options.apiKey, options.domain, payload, options.category)
   log(
     `Done — ${result.toolsSubmitted} submitted, ${result.toolsSkipped} unchanged (skipped), ` +
       `${result.toolsTombstoned} tombstoned. Domain verified: ${result.verified}.`,

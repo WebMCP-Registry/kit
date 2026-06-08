@@ -55,7 +55,7 @@ function ensureTsExtensionResolutionHook(): void {
  * here) and `defineToolContract`'s `ToolContract` (which never does). The
  * registry only ever sees this shape; the CLI duck-types on it rather than
  * importing either type, so it works against whatever a project's installed
- * `webmcp-kit` version actually produces.
+ * `@webmcp-registry/kit` version actually produces.
  */
 export interface ExtractedTool {
   name: string

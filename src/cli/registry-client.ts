@@ -85,15 +85,20 @@ export async function lookupDomain(registryUrl: string, domain: string): Promise
  * submissions are rejected. The two paths can't safely interleave once tombstoning
  * is in play, hence "CLI becomes exclusive" once a domain adopts `sync`.
  *
- * Per HANDOVER's constraint, this must only ever run at build/deploy time —
- * never from the browser — because it requires the registry API key
- * (`Authorization: Bearer wmcp_<key>`), which must never reach a visitor.
+ * This must only ever run at build/deploy time — never from the browser —
+ * because it requires the registry API key (`Authorization: Bearer wmcp_<key>`),
+ * which must never reach a visitor.
+ *
+ * `category` is optional and applies on every sync (insert or update) — most
+ * useful the first time a domain is registered, since that's when the registry
+ * has nothing to go on otherwise, but harmless to keep passing afterward.
  */
 export async function submitTools(
   registryUrl: string,
   apiKey: string,
   domain: string,
   tools: SubmitPayloadTool[],
+  category?: string,
 ): Promise<SubmitResult> {
   const url = new URL('/api/submit', registryUrl)
 
@@ -103,7 +108,7 @@ export async function submitTools(
       'content-type': 'application/json',
       authorization: `Bearer ${apiKey}`,
     },
-    body: JSON.stringify({ domain, tools, source: 'cli' }),
+    body: JSON.stringify({ domain, tools, source: 'cli', ...(category ? { category } : {}) }),
   })
 
   if (!response.ok) {

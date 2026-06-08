@@ -1,12 +1,36 @@
 {
-  "name": "webmcp-kit",
+  "name": "@webmcp-registry/kit",
   "version": "0.1.0",
-  "description": "A toolkit for defining and registering WebMCP tools, with framework adapters and registry sync.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Define and register WebMCP tools with Zod schemas, React hooks, and a CLI that syncs them to the WebMCP Registry.",
+  "keywords": [
+    "webmcp",
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "agents",
+    "tools",
+    "react",
+    "zod",
+    "browser"
+  ],
+  "homepage": "https://github.com/WebMCP-Registry/kit#readme",
+  "bugs": {
+    "url": "https://github.com/WebMCP-Registry/kit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WebMCP-Registry/kit.git"
+  },
+  "license": "MIT",
+  "author": "WebMCP Registry",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "webmcp-kit": "./dist/cli/index.js"
+    "webmcp": "dist/cli/index.js"
   },
   "engines": {
     "node": ">=23.6.0"

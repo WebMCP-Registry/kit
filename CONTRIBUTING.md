@@ -5,8 +5,8 @@ Thanks for taking a look — patches, bug reports, and questions are all welcome
 ## Getting set up
 
 ```bash
-git clone https://github.com/WebMCP-Registry/webmcp-kit.git
-cd webmcp-kit
+git clone https://github.com/WebMCP-Registry/kit.git
+cd kit
 npm install
 npm run build
 ```
@@ -38,7 +38,7 @@ src/
     hash.ts                deterministic hashing of tool contracts
     diff.ts                local-vs-registry diffing (added/changed/unchanged/removed)
     registry-client.ts     thin fetch wrapper around the registry's HTTP API
-    sync.ts                orchestrates the above into `webmcp-kit sync`
+    sync.ts                orchestrates the above into `webmcp sync`
 demo/                      a small todo app exercising both tool-definition patterns
 ```
 
