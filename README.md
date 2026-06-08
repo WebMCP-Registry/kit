@@ -1,16 +1,16 @@
 # @webmcp-registry/kit
 
-A small toolkit for exposing parts of your web app as tools an AI agent can call — built on top of [WebMCP](https://webmachinelearning.github.io/webmcp/), the emerging browser API that lets a page register tools directly on `document`/`navigator`.
+Define WebMCP tools with Zod schemas, register them from React components, and sync their contracts to the [WebMCP Registry](https://webmcp-registry.dev) — so agents can discover what your site can do before they ever land on it. It's built on top of [WebMCP](https://webmachinelearning.github.io/webmcp/), the emerging browser API that lets a page register tools directly on `document`/`navigator`.
 
 It gives you:
 
 - **`defineTool`** — describe a tool with a Zod schema and a handler, get something the browser can run, with the JSON Schema generated for you.
 - **`useWebMCPTool` / `useWebMCPTools`** — React hooks that register tools for the lifetime of a component and clean up after themselves.
-- **`webmcp sync`** — a CLI that scans your project for tools and pushes their schemas to the [WebMCP Registry](https://webmcp-registry.dev), so agents can discover what your site can do before they even land on it.
+- **`webmcp sync`** — a CLI that scans your project for tools and pushes their schemas to the registry, so agents can find them ahead of time.
 
 If you've never heard of WebMCP: think of it as the in-browser sibling of MCP. Instead of running a separate server that an agent connects to, your *web page itself* declares "here's what you can ask me to do," and a browser-native agent can call those tools directly — with the user's session, permissions, and current page state already in scope.
 
-> **Heads up:** WebMCP is brand new and not broadly shipped yet. As of writing, it's behind a flag in Chrome (`chrome://flags/#enable-webmcp-testing`, part of an origin trial). `@webmcp-registry/kit` is built so your code is ready the moment support lands — and degrades to a harmless no-op (with a console warning in dev) where it hasn't yet.
+> **Heads up:** WebMCP is brand new and not broadly shipped yet — it's currently behind a flag in Chrome. See [What happens where WebMCP isn't available yet](#what-happens-where-webmcp-isnt-available-yet) below for what that means for your code.
 
 ## Install
 
@@ -59,6 +59,17 @@ function TodoApp() {
 ```
 
 While this component is mounted, an agent visiting the page can call `add-todo` with `{ text: "buy milk" }`, and your handler runs exactly as if the user had typed it in and hit submit.
+
+## What happens where WebMCP isn't available yet
+
+WebMCP isn't shipped in stable browsers yet — as of writing it's behind a flag in Chrome (`chrome://flags/#enable-webmcp-testing`, part of an origin trial). Most of the people loading your site won't have it turned on for a while, and that's fine — `@webmcp-registry/kit` is built around that reality.
+
+Every hook checks for `document.modelContext` (and the `navigator` fallback some builds expose it on) before doing anything:
+
+- **In production**, if it's missing, registration is a silent no-op. Nothing throws, nothing logs, your app behaves exactly as it did before you added tools — visitors without WebMCP just don't notice it's there.
+- **In development**, you'll instead see a console warning naming each tool that didn't get registered, with a link back to the flag. That's there so you know your code is correct and simply waiting on the platform — not silently broken.
+
+In short: you can write and ship this code today, against a browser that mostly doesn't support it yet. The moment WebMCP lands for a given visitor, your tools start working for them with nothing further to do on your end. See [Trying it locally](#trying-it-locally) below for how to flip the flag and watch it happen.
 
 ## Two ways to define a tool
 
@@ -118,7 +129,7 @@ Keep the array referentially stable — define it at module scope (like `todoToo
 
 ## The `*.tools.ts` convention
 
-Put your tool definitions in files named `*.tools.ts` (e.g. `todo.tools.ts`, `search.tools.ts`), as plain top-level exports, with no React or browser imports:
+This is the only structural requirement the CLI has. Put your tool definitions in files named `*.tools.ts` (e.g. `todo.tools.ts`, `search.tools.ts`), as plain top-level exports, with no React or browser imports:
 
 ```
 src/
@@ -138,8 +149,6 @@ Since you've already got `@webmcp-registry/kit` installed (per the install step 
 ```bash
 npx webmcp sync --domain example.com --api-key $WEBMCP_REGISTRY_KEY
 ```
-
-> See the note on names above if you want to run this *without* installing first — a bare `npx webmcp` with nothing installed locally can resolve to an unrelated package.
 
 Get an API key from the registry's dashboard once you've signed in and verified your domain. Treat it like any other secret — store it in your CI provider's secrets, never commit it, never ship it to the browser.
 
